@@ -1,6 +1,13 @@
-import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import BiometricLogin from "../biometric-login";
+// Mock dos estilos
+jest.mock("./biometric-login.styles", () => ({
+  Container: "Container",
+  Title: "Title",
+  Input: "Input",
+  Button: "Button",
+  ErrorText: "ErrorText",
+  BiometricButton: "BiometricButton",
+  BiometricText: "BiometricText",
+}));
 
 // Mock do hook useBiometricLogin
 jest.mock("./use-biometric-login", () => ({
@@ -25,9 +32,13 @@ jest.mock("../../store", () => ({
   }),
 }));
 
+import React from "react";
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
+import BiometricLogin from "../biometric-login";
+
 describe("BiometricLogin Component", () => {
   const mockUseBiometricLogin =
-    require("../use-biometric-login").useBiometricLogin;
+    require("./use-biometric-login").useBiometricLogin;
 
   beforeEach(() => {
     jest.clearAllMocks();

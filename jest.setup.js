@@ -9,7 +9,7 @@ jest.mock('expo-secure-store', () => ({
 jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
   hasHardwareAsync: jest.fn(() => Promise.resolve(true)),
-  supportedAuthenticationTypesAsync: jest.fn(() => Promise.resolve([1])), // FINGERPRINT
+  supportedAuthenticationTypesAsync: jest.fn(() => Promise.resolve([1])),
 }));
 
 // Mock para react-native-mmkv
@@ -36,38 +36,44 @@ jest.mock('expo-router', () => ({
   Stack: 'Stack',
 }));
 
-// Mock para styled-components
-jest.mock('styled-components/native', () => ({
-  default: {
-    View: 'View',
-    Text: 'Text',
-    TouchableOpacity: 'TouchableOpacity',
-    TextInput: 'TextInput',
+// Mock para react-native
+jest.mock('react-native', () => ({
+  View: 'View',
+  Text: 'Text',
+  TouchableOpacity: 'TouchableOpacity',
+  TextInput: 'TextInput',
+  Alert: {
+    alert: jest.fn(),
   },
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
-  useTheme: () => ({
-    colors: {
-      background: '#ffffff',
-      text: '#000000',
-      primary: '#007bff',
-      secondary: '#6c757d',
-      danger: '#dc3545',
-    },
-  }),
+  Platform: {
+    OS: 'ios',
+  },
 }));
+
+// Mock para styled-components
+jest.mock('styled-components/native', () => {
+  const mockStyled = (component) => component;
+  mockStyled.View = 'View';
+  mockStyled.Text = 'Text';
+  mockStyled.TouchableOpacity = 'TouchableOpacity';
+  mockStyled.TextInput = 'TextInput';
+
+  return {
+    default: mockStyled,
+    ThemeProvider: ({ children }) => children,
+    useTheme: () => ({
+      colors: {
+        background: '#ffffff',
+        text: '#000000',
+        primary: '#007bff',
+        secondary: '#6c757d',
+        danger: '#dc3545',
+      },
+    }),
+  };
+});
 
 // Mock para zustand
 jest.mock('zustand', () => ({
   create: jest.fn((fn) => fn(() => ({}), () => ({}))),
-}));
-
-// Mock global para useAuthStore
-jest.mock('./src/modules/biometric-auth/store', () => ({
-  useAuthStore: jest.fn(),
-}));
-
-// Mock global para useTheme
-jest.mock('./src/theme/ThemeContext', () => ({
-  useTheme: jest.fn(),
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
