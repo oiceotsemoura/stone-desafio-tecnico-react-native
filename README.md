@@ -1,46 +1,67 @@
-# Teste Biometrics
+# 🔐 Biometric Login – Teste Técnico
 
-A React Native Expo app demonstrating biometric authentication with login screen.
+Este projeto demonstra a implementação de autenticação biométrica em um aplicativo mobile, com foco em boas práticas de arquitetura, segurança e experiência do usuário.
 
-## Features
+---
 
-- Login with email and password validation using Zod
-- Biometric authentication (Face ID/Touch ID) using Expo Local Authentication
-- State management with Zustand
-- Local storage with React Native MMKV
-- Navigation with Expo Router
+## 🧠 Decisões Técnicas
 
-## Technologies
+- A arquitetura escolhida foi prédefinida pelo desafio técnico, escolhas como quais bibliotecas usar, organização de pastas e padrões foram escolhidas préviamente para poder ver a capacidade de seguir padroes arquiteturais.
+- As únicas coisas que foram adicionadas foram a pasta de temas(theme) e os testes das funcionalidades de biometria, teste da tela home e teste da logica de negócio de autenticação.
 
-- React Native 0.81.5
-- Expo ~54.0.0
-- TypeScript ~5.9.2
-- Expo Router ~6.0.0
-- Zod ^4.0.0
-- Zustand ^5.0.0
-- Expo Local Authentication ~17.0.8
-- React Native MMKV ^3.0.0
+---
 
-## Getting Started
+## 🚀 Como Executar
 
-1. Install dependencies:
+### Pré-requisitos
 
-   ```yarn
+- Node.js / Yarn ou npm
+- Ambiente configurado para desenvolvimento mobile
+- Android Studio e/ou Xcode
 
-   ```
+### Instalação
 
-2. Start the development server:
+- Precisa estar com emulador ou telefone fisico conectado ao computador para teste de biometria
 
-   ```
-   yarn run android
-   ```
+```bash
+yarn
+yarn run android
+```
 
-3. Run on device/emulator:
-   - For Android: `npx expo start --android`
-   - For iOS: `npx expo start --ios`
-   - For web: `npx expo start --web`
+### Funcionalidades Implementadas
 
-## Usage
+- Autenticação biométrica (Face ID / Touch ID / Digital)
 
-- Enter email: user@example.com and password: password to login conventionally.
-- Use biometric button to authenticate with Face ID/Touch ID (if available).
+- Fallback para autenticação manual
+
+- Tratamento de erros (401 / 500)
+
+- Feedback visual ao usuário
+
+- Tela home com mudança de temas
+
+- Logout
+
+### Melhorias Futuras
+
+- Cobertura maior de testes
+
+- Implementação de teste de integração para validar json da api
+
+- Implementação de teste e2e nos fluxos críticos
+
+- Implementação de design system para reutilização de componentes
+
+- Salvar email do usuário ao fazer logout
+
+- Criação de um tema mais robustos com todos design tokens do figma
+
+- Separação de tela de Login genérica e serviços de biometria
+
+### Tempo gasto
+
+- Planejamento e arquitetura: 10 minutos
+
+- Implementação: 4 horas
+
+- Ajustes e testes: 30 minutos

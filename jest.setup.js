@@ -42,36 +42,17 @@ jest.mock('react-native', () => ({
   Text: 'Text',
   TouchableOpacity: 'TouchableOpacity',
   TextInput: 'TextInput',
+  ActivityIndicator: 'ActivityIndicator',
   Alert: {
     alert: jest.fn(),
   },
   Platform: {
     OS: 'ios',
   },
+  StyleSheet: {
+    flatten: jest.fn(() => ({})),
+  },
 }));
-
-// Mock para styled-components
-jest.mock('styled-components/native', () => {
-  const mockStyled = (component) => component;
-  mockStyled.View = 'View';
-  mockStyled.Text = 'Text';
-  mockStyled.TouchableOpacity = 'TouchableOpacity';
-  mockStyled.TextInput = 'TextInput';
-
-  return {
-    default: mockStyled,
-    ThemeProvider: ({ children }) => children,
-    useTheme: () => ({
-      colors: {
-        background: '#ffffff',
-        text: '#000000',
-        primary: '#007bff',
-        secondary: '#6c757d',
-        danger: '#dc3545',
-      },
-    }),
-  };
-});
 
 // Mock para zustand
 jest.mock('zustand', () => ({

@@ -1,17 +1,19 @@
 // Mock dos estilos
 jest.mock("./biometric-login.styles", () => ({
-  Container: "Container",
-  Title: "Title",
-  Input: "Input",
-  Button: "Button",
-  ErrorText: "ErrorText",
-  BiometricButton: "BiometricButton",
-  BiometricText: "BiometricText",
+  Container: "View",
+  Title: "Text",
+  Input: "TextInput",
+  Button: "TouchableOpacity",
+  ErrorText: "Text",
+  LoginButton: "TouchableOpacity",
+  BiometricButton: "TouchableOpacity",
+  ButtonText: "Text",
+  ForgotPassword: "Text",
 }));
 
 // Mock do hook useBiometricLogin
 jest.mock("./use-biometric-login", () => ({
-  useBiometricLogin: () => ({
+  useBiometricLogin: jest.fn(() => ({
     email: "",
     setEmail: jest.fn(),
     password: "",
@@ -22,19 +24,19 @@ jest.mock("./use-biometric-login", () => ({
     handleLogin: jest.fn(),
     handleBiometricLogin: jest.fn(),
     clearSensitiveData: jest.fn(),
-  }),
+  })),
 }));
 
 // Mock do useAuthStore
 jest.mock("../../store", () => ({
-  useAuthStore: () => ({
+  useAuthStore: jest.fn(() => ({
     biometricEnabled: false,
-  }),
+  })),
 }));
 
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import BiometricLogin from "../biometric-login";
+import BiometricLogin from "./biometric-login";
 
 describe("BiometricLogin Component", () => {
   const mockUseBiometricLogin =
@@ -55,7 +57,7 @@ describe("BiometricLogin Component", () => {
 
   it("shows biometric button when biometric is enabled", () => {
     // Mock biometric enabled
-    jest.mocked(require("../../../store").useAuthStore).mockReturnValue({
+    jest.mocked(require("../../store").useAuthStore).mockReturnValue({
       biometricEnabled: true,
     });
 
@@ -64,6 +66,9 @@ describe("BiometricLogin Component", () => {
   });
 
   it("does not show biometric button when biometric is disabled", () => {
+    jest.mocked(require("../../store").useAuthStore).mockReturnValue({
+      biometricEnabled: false,
+    });
     const { queryByText } = render(<BiometricLogin />);
     expect(queryByText("Entrar com Biometria")).toBeNull();
   });
@@ -91,7 +96,7 @@ describe("BiometricLogin Component", () => {
 
   it("calls handleBiometricLogin when biometric button is pressed", () => {
     // Mock biometric enabled
-    jest.mocked(require("../../../store").useAuthStore).mockReturnValue({
+    jest.mocked(require("../../store").useAuthStore).mockReturnValue({
       biometricEnabled: true,
     });
 
@@ -174,13 +179,12 @@ describe("BiometricLogin Component", () => {
   });
 
   it("calls Alert.alert when forgot password is pressed", () => {
-    const mockAlert = jest.spyOn(require("react-native"), "Alert");
-    mockAlert.alert = jest.fn();
+    const mockAlert = jest.spyOn(require("react-native").Alert, "alert");
 
     const { getByText } = render(<BiometricLogin />);
 
     fireEvent.press(getByText("Esqueceu sua senha?"));
-    expect(mockAlert.alert).toHaveBeenCalledWith(
+    expect(mockAlert).toHaveBeenCalledWith(
       "Forgot Password",
       "Feature not implemented yet.",
     );

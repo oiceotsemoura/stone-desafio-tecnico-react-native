@@ -4,22 +4,22 @@ import Home from "./home";
 
 // Mock do useAuthStore
 jest.mock("../../biometric-auth/store", () => ({
-  useAuthStore: () => ({
+  useAuthStore: jest.fn(() => ({
     logout: jest.fn(),
-  }),
+  })),
 }));
 
 // Mock do useTheme
 jest.mock("../../../theme/ThemeContext", () => ({
-  useTheme: () => ({
+  useTheme: jest.fn(() => ({
     toggleTheme: jest.fn(),
     isDark: false,
-  }),
+  })),
 }));
 
 describe("Home Component", () => {
   const mockUseAuthStore =
-    require("../../../biometric-auth/store").useAuthStore;
+    require("../../biometric-auth/store").useAuthStore;
   const mockUseTheme = require("../../../theme/ThemeContext").useTheme;
 
   beforeEach(() => {
