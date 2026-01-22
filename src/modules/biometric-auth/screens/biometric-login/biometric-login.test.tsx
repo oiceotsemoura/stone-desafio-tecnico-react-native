@@ -1,4 +1,3 @@
-// Mock dos estilos
 jest.mock("./biometric-login.styles", () => ({
   Container: "View",
   Title: "Text",
@@ -11,7 +10,6 @@ jest.mock("./biometric-login.styles", () => ({
   ForgotPassword: "Text",
 }));
 
-// Mock do hook useBiometricLogin
 jest.mock("./use-biometric-login", () => ({
   useBiometricLogin: jest.fn(() => ({
     email: "",
@@ -27,7 +25,6 @@ jest.mock("./use-biometric-login", () => ({
   })),
 }));
 
-// Mock do useAuthStore
 jest.mock("../../store", () => ({
   useAuthStore: jest.fn(() => ({
     biometricEnabled: false,
@@ -56,7 +53,6 @@ describe("BiometricLogin Component", () => {
   });
 
   it("shows biometric button when biometric is enabled", () => {
-    // Mock biometric enabled
     jest.mocked(require("../../store").useAuthStore).mockReturnValue({
       biometricEnabled: true,
     });
@@ -95,7 +91,6 @@ describe("BiometricLogin Component", () => {
   });
 
   it("calls handleBiometricLogin when biometric button is pressed", () => {
-    // Mock biometric enabled
     jest.mocked(require("../../store").useAuthStore).mockReturnValue({
       biometricEnabled: true,
     });
@@ -118,24 +113,6 @@ describe("BiometricLogin Component", () => {
 
     fireEvent.press(getByText("Entrar com Biometria"));
     expect(mockHandleBiometricLogin).toHaveBeenCalled();
-  });
-
-  it("shows loading indicator when isLoading is true", () => {
-    mockUseBiometricLogin.mockReturnValue({
-      email: "",
-      setEmail: jest.fn(),
-      password: "",
-      setPassword: jest.fn(),
-      errors: {},
-      isLoading: true,
-      error: null,
-      handleLogin: jest.fn(),
-      handleBiometricLogin: jest.fn(),
-      clearSensitiveData: jest.fn(),
-    });
-
-    const { getByTestId } = render(<BiometricLogin />);
-    // Note: ActivityIndicator doesn't have a testID by default, this would need adjustment
   });
 
   it("shows error message when error exists", () => {

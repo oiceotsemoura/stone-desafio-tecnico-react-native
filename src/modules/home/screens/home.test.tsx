@@ -2,14 +2,12 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import Home from "./home";
 
-// Mock do useAuthStore
 jest.mock("../../biometric-auth/store", () => ({
   useAuthStore: jest.fn(() => ({
     logout: jest.fn(),
   })),
 }));
 
-// Mock do useTheme
 jest.mock("../../../theme/ThemeContext", () => ({
   useTheme: jest.fn(() => ({
     toggleTheme: jest.fn(),
@@ -18,8 +16,7 @@ jest.mock("../../../theme/ThemeContext", () => ({
 }));
 
 describe("Home Component", () => {
-  const mockUseAuthStore =
-    require("../../biometric-auth/store").useAuthStore;
+  const mockUseAuthStore = require("../../biometric-auth/store").useAuthStore;
   const mockUseTheme = require("../../../theme/ThemeContext").useTheme;
 
   beforeEach(() => {
@@ -80,7 +77,6 @@ describe("Home Component", () => {
 
     fireEvent.press(getByText("Sair"));
 
-    // Wait for async operation
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(mockLogout).toHaveBeenCalled();
