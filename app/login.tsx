@@ -1,13 +1,5 @@
-import BiometricLogin from '../src/modules/biometric-auth/screens/biometric-login/biometric-login';
-import { useAuthStore } from '../src/modules/biometric-auth/store';
-import { Redirect } from 'expo-router';
+import BiometricLogin from '../src/modules/auth/screens/biometric-login/biometric-login';
 
 export default function Login() {
-  const { isAuthenticated } = useAuthStore();
-
-  if (isAuthenticated) {
-    return <Redirect href="/" />;
-  }
-
   return <BiometricLogin />;
 }

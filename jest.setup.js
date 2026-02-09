@@ -38,6 +38,7 @@ jest.mock('react-native', () => ({
   TouchableOpacity: 'TouchableOpacity',
   TextInput: 'TextInput',
   ActivityIndicator: 'ActivityIndicator',
+  FlatList: 'FlatList',
   Alert: {
     alert: jest.fn(),
   },

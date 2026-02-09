@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "teste-biometrics",
-    "slug": "teste-biometrics",
+    "name": "teste-tecnico-revenda-stone",
+    "slug": "teste-tecnico-revenda-stone",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,7 +26,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "teste-biometrics",
+    "scheme": "teste-tecnico-revenda-stone",
     "plugins": [
       "expo-router"
     ]

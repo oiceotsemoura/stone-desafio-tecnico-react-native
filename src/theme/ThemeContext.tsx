@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components/native';
 import { lightTheme, darkTheme, Theme } from './themes';
+import { StorageUtils } from '../shared/utils/storage.utils';
 
 interface ThemeContextType {
   theme: Theme;
@@ -24,11 +25,29 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const theme = isDark ? darkTheme : lightTheme;
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
+  useEffect(() => {
+    const loadTheme = async () => {
+      const savedTheme = await StorageUtils.loadTheme();
+      if (savedTheme !== null) {
+        setIsDark(savedTheme);
+      }
+      setIsLoading(false);
+    };
+    loadTheme();
+  }, []);
+
+  const toggleTheme = async () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    await StorageUtils.saveTheme(newTheme);
   };
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, isDark }}>

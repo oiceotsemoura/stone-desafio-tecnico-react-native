@@ -3,4 +3,8 @@ export interface AuthState {
   isLoading: boolean;
   error: string | null;
   biometricEnabled: boolean;
+  user: {
+    email: string;
+    fullName: string;
+  } | null;
 }

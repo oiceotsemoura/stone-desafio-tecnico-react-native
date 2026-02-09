@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import Home from "./home";
 
-jest.mock("../../biometric-auth/store", () => ({
+jest.mock("../../auth/store", () => ({
   useAuthStore: jest.fn(() => ({
     logout: jest.fn(),
   })),
@@ -16,7 +16,7 @@ jest.mock("../../../theme/ThemeContext", () => ({
 }));
 
 describe("Home Component", () => {
-  const mockUseAuthStore = require("../../biometric-auth/store").useAuthStore;
+  const mockUseAuthStore = require("../../auth/store").useAuthStore;
   const mockUseTheme = require("../../../theme/ThemeContext").useTheme;
 
   beforeEach(() => {
