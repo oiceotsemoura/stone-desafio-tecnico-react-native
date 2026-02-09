@@ -96,7 +96,7 @@ export class PaymentService {
       };
     }
     
-
+    if (Math.random() > 0.1) {
       return {
         success: true,
         transactionId: `TXN${Date.now()}`,

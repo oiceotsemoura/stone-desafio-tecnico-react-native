@@ -1,11 +1,24 @@
 import { loginWithCredentials } from './auth.service';
+import { UserService } from './user.service';
+
+jest.mock('./user.service');
 
 describe('Auth Service', () => {
   describe('loginWithCredentials', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('returns success for valid credentials', async () => {
+      (UserService.validateCredentials as jest.Mock).mockResolvedValue({
+        email: 'valid@test.com',
+        fullName: 'Valid User',
+        password: 'Valid#123',
+      });
+
       const result = await loginWithCredentials({
-        email: 'user@test.com',
-        password: 'Test#123',
+        email: 'valid@test.com',
+        password: 'Valid#123',
       });
 
       expect(result.success).toBe(true);
@@ -13,9 +26,11 @@ describe('Auth Service', () => {
       expect(result.message).toBeUndefined();
     }, 10000);
 
-    it('returns 401 error for error@test.com', async () => {
+    it('returns 401 error for non-existent user', async () => {
+      (UserService.validateCredentials as jest.Mock).mockResolvedValue(null);
+
       const result = await loginWithCredentials({
-        email: 'error@test.com',
+        email: 'nonexistent@test.com',
         password: 'anyPassword',
       });
 
@@ -35,9 +50,11 @@ describe('Auth Service', () => {
       expect(result.token).toBeUndefined();
     }, 10000);
 
-    it('returns 401 error for invalid credentials', async () => {
+    it('returns 401 error for invalid password', async () => {
+      (UserService.validateCredentials as jest.Mock).mockResolvedValue(null);
+
       const result = await loginWithCredentials({
-        email: 'invalid@test.com',
+        email: 'user@test.com',
         password: 'wrongPassword',
       });
 
@@ -46,9 +63,11 @@ describe('Auth Service', () => {
       expect(result.token).toBeUndefined();
     }, 10000);
 
-    it('returns 401 error for wrong password with valid email format', async () => {
+    it('returns 401 error for wrong password with registered user', async () => {
+      (UserService.validateCredentials as jest.Mock).mockResolvedValue(null);
+
       const result = await loginWithCredentials({
-        email: 'user@test.com',
+        email: 'registered@test.com',
         password: 'WrongPassword',
       });
 

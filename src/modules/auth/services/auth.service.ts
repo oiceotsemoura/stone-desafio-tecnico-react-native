@@ -34,18 +34,6 @@ export const loginWithCredentials = async (
       return { success: false, message: "Erro interno do servidor" };
     }
 
-    if (credentials.email === 'user@test.com' && credentials.password === 'Test#123') {
-      const mockToken = `token_user@test.com_${Date.now()}`;
-      return {
-        success: true,
-        token: mockToken,
-        user: {
-          email: 'user@test.com',
-          fullName: 'Test User',
-        }
-      };
-    }
-
     const user = await UserService.validateCredentials(credentials.email, credentials.password);
     
     if (user) {
