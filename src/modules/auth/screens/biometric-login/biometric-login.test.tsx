@@ -1,6 +1,7 @@
 jest.mock("./biometric-login.styles", () => ({
   Container: "View",
   Title: "Text",
+  Logo: "Image",
   Input: "TextInput",
   Button: "TouchableOpacity",
   ErrorText: "Text",
@@ -8,6 +9,15 @@ jest.mock("./biometric-login.styles", () => ({
   BiometricButton: "TouchableOpacity",
   ButtonText: "Text",
   ForgotPassword: "Text",
+  RegisterLink: "Text",
+}));
+
+jest.mock("expo-router", () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+  })),
 }));
 
 jest.mock("./use-biometric-login", () => ({
@@ -46,10 +56,11 @@ describe("BiometricLogin Component", () => {
   it("renders correctly", () => {
     const { getByText, getByPlaceholderText } = render(<BiometricLogin />);
 
-    expect(getByText("Login")).toBeTruthy();
     expect(getByPlaceholderText("Email")).toBeTruthy();
     expect(getByPlaceholderText("Password")).toBeTruthy();
     expect(getByText("Acessar")).toBeTruthy();
+    expect(getByText("Esqueceu sua senha?")).toBeTruthy();
+    expect(getByText("Não tem conta? Criar conta")).toBeTruthy();
   });
 
   it("shows biometric button when biometric is enabled", () => {
@@ -162,8 +173,8 @@ describe("BiometricLogin Component", () => {
 
     fireEvent.press(getByText("Esqueceu sua senha?"));
     expect(mockAlert).toHaveBeenCalledWith(
-      "Forgot Password",
-      "Feature not implemented yet.",
+      "Esqueceu a Senha",
+      "Funcionalidade não implementada ainda.",
     );
   });
 });

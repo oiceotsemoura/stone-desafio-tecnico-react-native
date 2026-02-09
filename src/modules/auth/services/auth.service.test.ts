@@ -20,7 +20,7 @@ describe('Auth Service', () => {
       });
 
       expect(result.success).toBe(false);
-      expect(result.message).toBe('Invalid email or password');
+      expect(result.message).toBe('Email ou senha inválidos');
       expect(result.token).toBeUndefined();
     }, 10000);
 
@@ -31,7 +31,7 @@ describe('Auth Service', () => {
       });
 
       expect(result.success).toBe(false);
-      expect(result.message).toBe('Internal server error');
+      expect(result.message).toBe('Erro interno do servidor');
       expect(result.token).toBeUndefined();
     }, 10000);
 
@@ -42,7 +42,7 @@ describe('Auth Service', () => {
       });
 
       expect(result.success).toBe(false);
-      expect(result.message).toBe('Invalid email or password');
+      expect(result.message).toBe('Email ou senha inválidos');
       expect(result.token).toBeUndefined();
     }, 10000);
 
@@ -53,7 +53,7 @@ describe('Auth Service', () => {
       });
 
       expect(result.success).toBe(false);
-      expect(result.message).toBe('Invalid email or password');
+      expect(result.message).toBe('Email ou senha inválidos');
       expect(result.token).toBeUndefined();
     }, 10000);
   });

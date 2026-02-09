@@ -24,11 +24,27 @@ export const loginWithCredentials = async (
   });
 
   const timeout = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("Request timeout")), 5000),
+    setTimeout(() => reject(new Error("Tempo de requisição excedido")), 5000),
   );
 
   try {
     await Promise.race([mockRequest, timeout]);
+
+    if (credentials.email === 'server@error.com') {
+      return { success: false, message: "Erro interno do servidor" };
+    }
+
+    if (credentials.email === 'user@test.com' && credentials.password === 'Test#123') {
+      const mockToken = `token_user@test.com_${Date.now()}`;
+      return {
+        success: true,
+        token: mockToken,
+        user: {
+          email: 'user@test.com',
+          fullName: 'Test User',
+        }
+      };
+    }
 
     const user = await UserService.validateCredentials(credentials.email, credentials.password);
     

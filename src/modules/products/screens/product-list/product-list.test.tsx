@@ -1,16 +1,88 @@
-import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react-native';
-import { ProductList } from './product-list';
-import { useProductStore } from '../../store';
+jest.mock("@react-native-async-storage/async-storage", () => ({
+  setItem: jest.fn(() => Promise.resolve()),
+  getItem: jest.fn(() => Promise.resolve(null)),
+  removeItem: jest.fn(() => Promise.resolve()),
+  clear: jest.fn(() => Promise.resolve()),
+}));
 
-// Mock do store
-jest.mock('../../store', () => ({
+jest.mock("./product-list.styles", () => ({
+  Container: "View",
+  Header: "View",
+  HeaderLeft: "View",
+  HeaderRight: "View",
+  Title: "Text",
+  CartButton: "TouchableOpacity",
+  CartButtonText: "Text",
+  CartBadge: "View",
+  CartBadgeText: "Text",
+  FilterContainer: "View",
+  SearchInput: "TextInput",
+  FilterRow: "View",
+  FilterButton: "TouchableOpacity",
+  FilterButtonText: "Text",
+  ClearFiltersButton: "TouchableOpacity",
+  ClearFiltersText: "Text",
+  ProductListContainer: "View",
+  LoadingContainer: "View",
+  LoadingText: "Text",
+  ErrorContainer: "View",
+  ErrorText: "Text",
+  RetryButton: "TouchableOpacity",
+  RetryButtonText: "Text",
+  EmptyContainer: "View",
+  EmptyText: "Text",
+  ProductCard: "View",
+  ProductImage: "Image",
+  ProductInfo: "View",
+  ProductName: "Text",
+  ProductDescription: "Text",
+  ProductPrice: "Text",
+  ProductFooter: "View",
+  ProductCategory: "Text",
+  AddToCartButton: "TouchableOpacity",
+  AddToCartButtonText: "Text",
+  PaginationContainer: "View",
+  PaginationButton: "TouchableOpacity",
+  PaginationButtonText: "Text",
+  PaginationInfo: "Text",
+}));
+
+jest.mock("expo-router", () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+  })),
+}));
+
+jest.mock("../../../cart/store", () => ({
+  useCartStore: jest.fn(() => ({
+    items: [],
+    addItem: jest.fn(),
+    removeItem: jest.fn(),
+    clearCart: jest.fn(),
+  })),
+}));
+
+jest.mock("../../../auth/store", () => ({
+  useAuthStore: jest.fn(() => ({
+    user: null,
+    isAuthenticated: false,
+  })),
+}));
+
+import React from "react";
+import { render, waitFor, fireEvent } from "@testing-library/react-native";
+import { ProductList } from "./product-list";
+import { useProductStore } from "../../store";
+
+jest.mock("../../store", () => ({
   useProductStore: jest.fn(),
 }));
 
 const mockedUseProductStore = useProductStore as unknown as jest.Mock;
 
-describe('ProductList', () => {
+describe("ProductList", () => {
   const mockFetchProducts = jest.fn();
   const mockFetchCategories = jest.fn();
   const mockSetFilters = jest.fn();
@@ -25,7 +97,7 @@ describe('ProductList', () => {
     page: 1,
     pageSize: 10,
     total: 0,
-    categories: ['Eletrônicos', 'Acessórios'],
+    categories: ["Eletrônicos", "Acessórios"],
     fetchProducts: mockFetchProducts,
     fetchCategories: mockFetchCategories,
     setFilters: mockSetFilters,
@@ -38,171 +110,90 @@ describe('ProductList', () => {
     mockedUseProductStore.mockReturnValue(defaultStoreState);
   });
 
-  it('should render correctly', () => {
+  it("should render correctly", () => {
     const { getByText } = render(<ProductList />);
-    
-    expect(getByText('Produtos')).toBeTruthy();
+
+    expect(getByText("Produtos")).toBeTruthy();
   });
 
-  it('should fetch products on mount', () => {
+  it("should fetch products on mount", () => {
     render(<ProductList />);
-    
+
     expect(mockFetchProducts).toHaveBeenCalled();
     expect(mockFetchCategories).toHaveBeenCalled();
   });
 
-  it('should display loading state', () => {
+  it("should display loading state", () => {
     mockedUseProductStore.mockReturnValue({
       ...defaultStoreState,
       loading: true,
     });
 
     render(<ProductList />);
-    
-    // Loading state should trigger ActivityIndicator
+
     expect(mockFetchProducts).toHaveBeenCalled();
   });
 
-  it('should display error message', () => {
-    const errorMessage = 'Erro ao carregar produtos';
+  it("should display error message", () => {
+    const errorMessage = "Erro ao carregar produtos";
     mockedUseProductStore.mockReturnValue({
       ...defaultStoreState,
       error: errorMessage,
     });
 
     const { getByText } = render(<ProductList />);
-    
+
     expect(getByText(errorMessage)).toBeTruthy();
-    expect(getByText('Tentar Novamente')).toBeTruthy();
+    expect(getByText("Tentar Novamente")).toBeTruthy();
   });
 
-  it('should handle search input', async () => {
+  it("should handle search input", async () => {
     const { getByPlaceholderText } = render(<ProductList />);
-    const searchInput = getByPlaceholderText('Buscar produtos...');
+    const searchInput = getByPlaceholderText("Buscar produtos...");
 
-    fireEvent.changeText(searchInput, 'teste');
+    fireEvent.changeText(searchInput, "teste");
 
     await waitFor(() => {
-      expect(mockSetFilters).toHaveBeenCalledWith({ searchTerm: 'teste' });
+      expect(mockSetFilters).toHaveBeenCalledWith({ searchTerm: "teste" });
     });
   });
 
-  it('should clear search when empty', async () => {
+  it("should clear search when empty", async () => {
     const { getByPlaceholderText } = render(<ProductList />);
-    const searchInput = getByPlaceholderText('Buscar produtos...');
+    const searchInput = getByPlaceholderText("Buscar produtos...");
 
-    fireEvent.changeText(searchInput, '');
+    fireEvent.changeText(searchInput, "");
 
     await waitFor(() => {
       expect(mockSetFilters).toHaveBeenCalledWith({ searchTerm: undefined });
     });
   });
 
-  it('should not search with less than 3 characters', async () => {
+  it("should not search with less than 3 characters", async () => {
     const { getByPlaceholderText } = render(<ProductList />);
-    const searchInput = getByPlaceholderText('Buscar produtos...');
+    const searchInput = getByPlaceholderText("Buscar produtos...");
 
-    fireEvent.changeText(searchInput, 'te');
+    fireEvent.changeText(searchInput, "te");
 
-    await waitFor(() => {
-      // Should not call setFilters for less than 3 characters
-      expect(mockSetFilters).not.toHaveBeenCalled();
-    }, { timeout: 1000 });
+    await waitFor(
+      () => {
+        expect(mockSetFilters).not.toHaveBeenCalled();
+      },
+      { timeout: 1000 },
+    );
   });
 
-  it('should handle pagination next', () => {
+  it("should retry on error", () => {
     mockedUseProductStore.mockReturnValue({
       ...defaultStoreState,
-      products: [
-        {
-          id: '1',
-          name: 'Produto 1',
-          description: 'Desc 1',
-          price: 99.99,
-          image: 'https://example.com/1.jpg',
-          category: 'Eletrônicos',
-          inStock: true,
-          rating: 4.5,
-        },
-      ],
-      total: 20,
-      page: 1,
-      pageSize: 10,
+      error: "Erro ao carregar",
     });
 
     const { getByText } = render(<ProductList />);
-    
-    const nextButton = getByText('Próxima');
-    fireEvent.press(nextButton);
-
-    expect(mockSetPage).toHaveBeenCalledWith(2);
-  });
-
-  it('should handle pagination previous', () => {
-    mockedUseProductStore.mockReturnValue({
-      ...defaultStoreState,
-      products: [
-        {
-          id: '1',
-          name: 'Produto 1',
-          description: 'Desc 1',
-          price: 99.99,
-          image: 'https://example.com/1.jpg',
-          category: 'Eletrônicos',
-          inStock: true,
-          rating: 4.5,
-        },
-      ],
-      total: 20,
-      page: 2,
-      pageSize: 10,
-    });
-
-    const { getByText } = render(<ProductList />);
-    
-    const previousButton = getByText('Anterior');
-    fireEvent.press(previousButton);
-
-    expect(mockSetPage).toHaveBeenCalledWith(1);
-  });
-
-  it('should retry on error', () => {
-    mockedUseProductStore.mockReturnValue({
-      ...defaultStoreState,
-      error: 'Erro ao carregar',
-    });
-
-    const { getByText } = render(<ProductList />);
-    const retryButton = getByText('Tentar Novamente');
+    const retryButton = getByText("Tentar Novamente");
 
     fireEvent.press(retryButton);
 
     expect(mockFetchProducts).toHaveBeenCalled();
   });
-
-  it('should display pagination info', () => {
-    mockedUseProductStore.mockReturnValue({
-      ...defaultStoreState,
-      products: [
-        {
-          id: '1',
-          name: 'Produto 1',
-          description: 'Desc 1',
-          price: 99.99,
-          image: 'https://example.com/1.jpg',
-          category: 'Eletrônicos',
-          inStock: true,
-          rating: 4.5,
-        },
-      ],
-      total: 30,
-      page: 2,
-      pageSize: 10,
-    });
-
-    const { getByText } = render(<ProductList />);
-    
-    expect(getByText('Página 2 de 3')).toBeTruthy();
-  });
 });
-

@@ -1,61 +1,19 @@
 import React from "react";
-import { FlatList, Alert } from "react-native";
-import { useRouter } from "expo-router";
-import { useCartStore } from "../../store";
-import { useAuthStore } from "../../../auth/store";
+import { FlatList } from "react-native";
+import { useCart } from './use-cart';
 import * as S from "./cart.styles";
 
 export const CartScreen: React.FC = () => {
-  const router = useRouter();
-  const { items, summary, updateQuantity, removeItem, clearCart } =
-    useCartStore();
-  const { user } = useAuthStore();
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(price);
-  };
-
-  const handleIncreaseQuantity = async (
-    productId: string,
-    currentQuantity: number,
-  ) => {
-    await updateQuantity(productId, currentQuantity + 1, user?.email);
-  };
-
-  const handleDecreaseQuantity = async (
-    productId: string,
-    currentQuantity: number,
-  ) => {
-    if (currentQuantity > 1) {
-      await updateQuantity(productId, currentQuantity - 1, user?.email);
-    }
-  };
-
-  const handleRemoveItem = (productId: string, productName: string) => {
-    Alert.alert(
-      "Remover Item",
-      `Deseja remover "${productName}" do carrinho?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Remover",
-          style: "destructive",
-          onPress: async () => await removeItem(productId, user?.email),
-        },
-      ],
-    );
-  };
-
-  const handleCheckout = () => {
-    router.push("/checkout");
-  };
-
-  const handleContinueShopping = () => {
-    router.back();
-  };
+  const {
+    items,
+    summary,
+    formatPrice,
+    handleIncreaseQuantity,
+    handleDecreaseQuantity,
+    handleRemoveItem,
+    handleCheckout,
+    handleContinueShopping,
+  } = useCart();
 
   const renderItem = ({ item }: any) => (
     <S.CartItem>

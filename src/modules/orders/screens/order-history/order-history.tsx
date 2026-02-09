@@ -1,43 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FlatList, ActivityIndicator } from 'react-native';
-import { useOrderStore } from '../../store';
 import { Order } from '../../../../shared/types/order.types';
+import { useOrderHistory } from './use-order-history';
 import * as S from './order-history.styles';
 
-const STATUS_LABELS: Record<string, string> = {
-  all: 'Todos',
-  pending: 'Pendente',
-  processing: 'Processando',
-  shipped: 'Enviado',
-  delivered: 'Entregue',
-  cancelled: 'Cancelado',
-};
-
 export const OrderHistory: React.FC = () => {
-  const { orders, loading, error, selectedStatus, fetchOrders, setSelectedStatus } =
-    useOrderStore();
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
-  };
-
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(new Date(date));
-  };
+  const {
+    orders,
+    loading,
+    error,
+    selectedStatus,
+    STATUS_LABELS,
+    formatPrice,
+    formatDate,
+    getItemCount,
+    handleStatusChange,
+    handleRetry,
+  } = useOrderHistory();
 
   const renderOrder = ({ item }: { item: Order }) => {
-    const itemCount = item.items.reduce((sum, cartItem) => sum + cartItem.quantity, 0);
+    const itemCount = getItemCount(item);
     
     return (
       <S.OrderCard>
@@ -72,7 +54,7 @@ export const OrderHistory: React.FC = () => {
   const renderError = () => (
     <S.ErrorContainer>
       <S.ErrorText>{error}</S.ErrorText>
-      <S.RetryButton onPress={fetchOrders}>
+      <S.RetryButton onPress={handleRetry}>
         <S.RetryButtonText>Tentar Novamente</S.RetryButtonText>
       </S.RetryButton>
     </S.ErrorContainer>
@@ -110,7 +92,7 @@ export const OrderHistory: React.FC = () => {
           renderItem={({ item }) => (
             <S.FilterButton
               active={selectedStatus === item}
-              onPress={() => setSelectedStatus(item as any)}
+              onPress={() => handleStatusChange(item)}
             >
               <S.FilterButtonText active={selectedStatus === item}>
                 {STATUS_LABELS[item]}
@@ -130,7 +112,7 @@ export const OrderHistory: React.FC = () => {
           ListEmptyComponent={renderEmpty}
           contentContainerStyle={{ paddingVertical: 8, flexGrow: 1 }}
           refreshing={loading}
-          onRefresh={fetchOrders}
+          onRefresh={handleRetry}
         />
       )}
     </S.Container>

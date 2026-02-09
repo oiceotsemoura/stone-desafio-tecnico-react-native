@@ -32,7 +32,7 @@ const BiometricLogin: React.FC = () => {
   const { biometricEnabled } = useAuthStore();
 
   const handleForgotPassword = () => {
-    Alert.alert('Forgot Password', 'Feature not implemented yet.');
+    Alert.alert('Esqueceu a Senha', 'Funcionalidade não implementada ainda.');
   };
 
   const handleRegister = () => {
